@@ -1,6 +1,15 @@
 # report2_git
 アルゴリズム特論課題2  
 C++版です
+## 各種ファイル
+### [report2_git.cpp](https://github.com/akira-kumashiro/report2_git/blob/master/report2_git/report2_git/report2_git.cpp "report2_git.cpp")
+`main()`とかが入ってるやつ
+### [GA.h](https://github.com/akira-kumashiro/report2_git/blob/master/report2_git/report2_git/GA.h "GA.h")
+`GA`クラスの定義とか
+### [GA.cpp](https://github.com/akira-kumashiro/report2_git/blob/master/report2_git/report2_git/GA.cpp "GA.cpp")
+`GA`クラスの関数とか
+## コピーの仕方
+上の3つのファイルを中身を含めて作る→新しいプロジェクトを作ってVisualStudioの右側にある「ソリューション エクスプローラー」にD&D
 ## 関数と評価値について
 `functionValue`には与えられた関数の値が入ってます  
 `result`には`functionValue`の最大値を引いたものを2乗して入れてます
