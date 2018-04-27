@@ -10,6 +10,18 @@ GA::GA(int _max_genom_list, int _var_num, std::vector<double> _varMax, std::vect
 	var_num = _var_num;
 	varMax = _varMax;
 	varMin = _varMin;
+
+	for (int i = 0; i < max_genom_list; i++)
+	{
+		for (int j = 0; j < var_num; j++)
+		{
+			data[i].x[j] = random(varMin[j], varMax[j]);//遺伝子の初期設定
+		}
+	}
+	prev_data = data;
+	calcResult(true);
+
+	displayValues();
 }
 
 bool GA::init()
@@ -19,12 +31,12 @@ bool GA::init()
 		for (int j = 0; j < var_num; j++)
 		{
 			data[i].x[j] = random(varMin[j], varMax[j]);//遺伝子の初期設定
-			printf_s("%lf", data[i].x[j]);
+			printf_s("%10.7lf", data[i].x[j]);
 		}
-		printf_s(" \t f(x,y)=%7.4lf\t Result=%9.5lf\n", data[i].functionValue, data[i].result);
+		printf_s(" \t f(x,y)=%10.7lf\t Result=%10.7lf\n", data[i].functionValue, data[i].result);
 	}
 	prev_data = data;
-	calcResult();
+	calcResult(true);
 	return true;
 }
 
@@ -34,16 +46,15 @@ bool GA::selection()
 	bool ret = false;
 
 	calc(false);
-	
-	for (int i = 0; i < max_genom_list; i++)
-		//ルーレット選択用に評価関数の合計と一番評価の良い番号を取得
+
+	for (int i = 0; i < max_genom_list; i++)//ルーレット選択用に評価関数の合計と一番評価の良い番号を取得
 	{
 		if (data[i].result > data[max_num].result)
 			max_num = i;
 	}
 
 	eliteData = data[max_num];//最も評価の良い個体を保持
-	if (-eliteData.functionValue + prev_data[max_num].functionValue != 0)//最も評価の良い個体の変化の監視(デバッグ用)
+	if (prev_data[max_num].functionValue - eliteData.functionValue != 0)//最も評価の良い個体の変化の監視(デバッグ用)
 		ret = true;
 	prev_data = data;
 	for (int i = 0; i < max_genom_list; i++)
@@ -51,7 +62,7 @@ bool GA::selection()
 		double selector = random(0.0, 1.0);//乱数を生成
 		double needle = 0;//ルーレットの針を生成
 		int j = 0;
-		for (;; j++)
+		for (; ; j++)
 		{
 			needle += (prev_data[j].result / resultSumValue);//ルーレットの針を乱数の値まで進める
 			if (needle > selector)
@@ -72,13 +83,11 @@ bool GA::blxAlphaCrossover()
 	{
 		for (int j = 0; j < var_num; j++)
 		{
-			double ave, length;
+			double ave = (data[i].x[j] + data[i + 1].x[j]) / 2;
+			double length = std::abs((data[i].x[j] - data[i + 1].x[j]));
 
-			ave = (data[i].x[j] + data[i + 1].x[j]) / 2;
-			length = std::abs((data[i].x[j] - data[i + 1].x[j]));
-
-			data[i].x[j] = random(ave - length * (1 + alpha*2) / 2, ave + length * (1 + alpha*2) / 2);
-			data[i + 1].x[j] = random(ave - length * (1 + alpha*2) / 2, ave + length * (1 + alpha*2) / 2);
+			data[i].x[j] = random(ave - length * (1 + alpha * 2) / 2, ave + length * (1 + alpha * 2) / 2);
+			data[i + 1].x[j] = random(ave - length * (1 + alpha * 2) / 2, ave + length * (1 + alpha * 2) / 2);
 		}
 	}
 	return true;
@@ -101,10 +110,9 @@ bool GA::mutation()
 
 bool GA::calc(bool enableDisplay)
 {
-	calcResult();
-	for (int i = 0; i < max_genom_list; i++)
+	calcResult(true);
+	for (int i = 0; i < max_genom_list; i++)//評価関数が最小の奴と最大のやつを検索
 	{
-		//評価関数が最小の奴と最大のやつを検索
 		if (data[i].result < data[minNum].result)
 		{
 			minNum = i;
@@ -117,22 +125,15 @@ bool GA::calc(bool enableDisplay)
 	//評価関数が最もいいやつを保存
 	data[minNum] = eliteData;
 
-	calcResult();
+	calcResult(true);
+
 	if (enableDisplay)
-	{
-		for (int i = 0; i < max_genom_list; i++)
-		{
-			for (int j = 0; j < var_num; j++)
-			{
-				printf_s("%lf,", data[i].x[j]);//デバッグ用
-			}
-			printf_s(" \t f(x,y)=%7.4lf\t Result=%7.4lf\n", data[i].functionValue, data[i].result);
-		}
-	}
+		displayValues();
+
 	return true;
 }
 
-bool GA::calcResult()
+bool GA::calcResult(bool enableSort)
 {
 	int maxNum = 0;
 	double seg;
@@ -159,11 +160,12 @@ bool GA::calcResult()
 		data[i].result = std::pow((data[i].functionValue - seg), 2.0);//与えられた関数の値から切片で設定した値を引いて2乗する→与えられた関数の値が小さいやつが強くなる
 
 		if (!flag)//場外に出たやつの処理
-		{
 			data[i].result *= coefficient;
-		}
 		resultSumValue += data[i].result;
 	}
+	if (enableSort)
+		std::sort(data.begin(), data.end(), [](const Data& x, const Data& y) { return x.functionValue > y.functionValue; });
+
 	return true;
 }
 
@@ -194,7 +196,18 @@ double GA::random(double min, double max)
 	return distribution(engine);
 }
 
-
+bool GA::displayValues()
+{
+	for (int i = 0; i < max_genom_list; i++)
+	{
+		for (int j = 0; j < var_num; j++)
+		{
+			printf_s("%10.7lf,", data[i].x[j]);//デバッグ用
+		}
+		printf_s(" \t f(x,y)=%10.7lf\t Result=%10.7lf\n", data[i].functionValue, data[i].result);
+	}
+	return true;
+}
 
 GA::~GA()
 {

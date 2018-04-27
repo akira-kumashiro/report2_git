@@ -1,7 +1,11 @@
 ﻿  GA.cpp
+d:\desktop\report2_git\report2_git\report2_git\ga.cpp(1): warning C4819: ファイルは、現在のコード ページ (932) で表示できない文字を含んでいます。データの損失を防ぐために、ファイルを Unicode 形式で保存してください。
+d:\desktop\report2_git\report2_git\report2_git\ga.h : warning C4819: ファイルは、現在のコード ページ (932) で表示できない文字を含んでいます。データの損失を防ぐために、ファイルを Unicode 形式で保存してください。
+  report2_git.cpp
+d:\desktop\report2_git\report2_git\report2_git\ga.h : warning C4819: ファイルは、現在のコード ページ (932) で表示できない文字を含んでいます。データの損失を防ぐために、ファイルを Unicode 形式で保存してください。
   コード生成しています。
-  2 of 311 functions ( 0.6%) were compiled, the rest were copied from previous compilation.
-    0 functions were new in current compilation
-    0 functions had inline decision re-evaluated but remain unchanged
+  18 of 311 functions ( 5.8%) were compiled, the rest were copied from previous compilation.
+    14 functions were new in current compilation
+    1 functions had inline decision re-evaluated but remain unchanged
   コード生成が終了しました。
-  report2_git.vcxproj -> C:\Users\denki\Desktop\report2_git\report2_git\x64\Release\report2_git.exe
+  report2_git.vcxproj -> D:\Desktop\report2_git\report2_git\x64\Release\report2_git.exe

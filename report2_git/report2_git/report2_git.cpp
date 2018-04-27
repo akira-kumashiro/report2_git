@@ -1,7 +1,4 @@
-﻿// report1.cpp : アプリケーションのエントリ ポイントを定義します。
-//
-
-#include "stdafx.h"
+﻿#include "stdafx.h"
 #include "GA.h"
 
 #define MAX_GENERATION 30000
@@ -20,13 +17,13 @@ int main()
 	std::vector<double> vMin(varMin, std::end(varMin));
 	GA ga(MAX_GENOM_LIST, VAR_NUM, vMax, vMin);//遺伝的アルゴリズム諸関数をまとめたクラスの宣言
 
-	ga.init();//変数の初期化
+	//ga.init();//変数の初期化
 
 	for (int i = 0; i <= MAX_GENERATION; i++)//メインのループ
 	{
 		bool change = ga.selection();//選択
-		//ga.uniformityCrossover();//交叉
-		ga.blxAlphaCrossover();
+
+		ga.blxAlphaCrossover();//交叉
 
 		//ga.mutation();//突然変異
 
@@ -36,13 +33,15 @@ int main()
 			ga.calc(true);//評価関数の計算
 		}
 		else
+		{
 			ga.calc(false);//評価関数の計算
+		}
 	}
-	std::sort(ga.data.begin(), ga.data.end(), [](const GA::Data& x, const GA::Data& y) { return x.functionValue > y.functionValue; });
 
-	while (!_kbhit())
+	while (1)
 	{
-
+		if (_kbhit() && _getch() == 27)
+			break;
 	}
 	return 0;
 }

@@ -15,8 +15,8 @@ private:
 	double individualMutationRate = 0.1;//個体突然変異率
 	int minNum = 0, maxNum = 0;
 	double alpha = 0.5;
-public:
 	std::vector<double> varMax, varMin;//変数の最小値・最大値
+public:
 	double resultSumValue;//評価関数の合計
 
 	class Data//データ格納用クラス
@@ -24,7 +24,7 @@ public:
 	private:
 		int var_num;//変数の数
 	public:
-		std::vector<double> x;//品物を入れるかどうかの配列
+		std::vector<double> x;//座標
 		double functionValue;//与えられた関数の値
 		double result;
 
@@ -45,12 +45,14 @@ public:
 	bool blxAlphaCrossover();
 	bool mutation();//突然変異
 	bool calc(bool enableDisplay);//評価関数の計算
-	bool calcResult();
+private:
+	bool calcResult(bool enableSort);
 	int random(int min, int max);
 	double random(int min, double max);
 	double random(double min, int max);
 	double random(double min, double max);
-
+	bool displayValues();
+;public:
 	~GA();//デコンストラクタ
 };
 
