@@ -104,6 +104,7 @@ bool GA::calc(bool enableDisplay)
 	calcResult();
 	for (int i = 0; i < max_genom_list; i++)
 	{
+		//評価関数が最小の奴と最大のやつを検索
 		if (data[i].result < data[minNum].result)
 		{
 			minNum = i;
@@ -113,6 +114,7 @@ bool GA::calc(bool enableDisplay)
 			maxNum = i;
 		}
 	}
+	//評価関数が最もいいやつを保存
 	data[minNum] = eliteData;
 
 	calcResult();
@@ -136,27 +138,27 @@ bool GA::calcResult()
 	double seg;
 	for (int i = 0; i < max_genom_list; i++)
 	{
-		data[i].functionValue = std::sin(data[i].x[0] + data[i].x[1]) + std::pow((data[i].x[0] - data[i].x[1]), 2.0) - 1.5*data[i].x[0] + 2.5*data[i].x[1] + 1;
-		if (data[maxNum].functionValue < data[i].functionValue)
+		data[i].functionValue = std::sin(data[i].x[0] + data[i].x[1]) + std::pow((data[i].x[0] - data[i].x[1]), 2.0) - 1.5*data[i].x[0] + 2.5*data[i].x[1] + 1;//与えられた関数
+		if (data[maxNum].functionValue < data[i].functionValue)//座標の中で最も関数が大きいやつを検索
 		{
 			maxNum = i;
 		}
 	}
-	seg = data[maxNum].functionValue;
+	seg = data[maxNum].functionValue;//評価関数の切片を与えられた関数が最も大きいやつにセット
 	resultSumValue = 0;
 
 	for (int i = 0; i < max_genom_list; i++)
 	{
 		bool flag = true;
-		double coefficient = 0.0001;//評価関数用の定数
+		double coefficient = 0.01;//評価関数用の定数
 		for (int j = 0; j < var_num; j++)
 		{
-			if (data[i].x[j] > varMax[j] || data[i].x[j] < varMin[j])
+			if (data[i].x[j] > varMax[j] || data[i].x[j] < varMin[j])//座標が場外にいるやつの処理
 				flag = false;
 		}
-		data[i].result = std::pow((data[i].functionValue - seg), 2.0);
+		data[i].result = std::pow((data[i].functionValue - seg), 2.0);//与えられた関数の値から切片で設定した値を引いて2乗する→与えられた関数の値が小さいやつが強くなる
 
-		if (!flag)//最大重量を超えなければそのまま
+		if (!flag)//場外に出たやつの処理
 		{
 			data[i].result *= coefficient;
 		}
