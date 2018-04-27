@@ -10,72 +10,48 @@
 class GA
 {
 private:
-	int max_genom_list;//ŒÂ‘Ì”
-	int var_num;//•i•¨‚ÌŒÂ”
-	//double crossoverRate = 0.8;//Œğ³—¦
-	double individualMutationRate = 0.1;//ŒÂ‘Ì“Ë‘R•ÏˆÙ—¦
-	//double genomMutaionRate = 0.04;//ˆâ“`q“Ë‘R•ÏˆÙ—¦
+	int max_genom_list;//å€‹ä½“æ•°
+	int var_num;//å“ç‰©ã®å€‹æ•°
+	double individualMutationRate = 0.1;//å€‹ä½“çªç„¶å¤‰ç•°ç‡
 	int minNum = 0, maxNum = 0;
 	double alpha = 0.5;
 public:
-	std::vector<double> varMax, varMin;
-	double resultSumValue;//•]‰¿ŠÖ”‚Ì‡Œv
+	std::vector<double> varMax, varMin;//å¤‰æ•°ã®æœ€å°å€¤ãƒ»æœ€å¤§å€¤
+	double resultSumValue;//è©•ä¾¡é–¢æ•°ã®åˆè¨ˆ
 
-	class Data//ƒf[ƒ^Ši”[—pƒNƒ‰ƒX
+	class Data//ãƒ‡ãƒ¼ã‚¿æ ¼ç´ç”¨ã‚¯ãƒ©ã‚¹
 	{
 	private:
-		//double coefficient = 0.01;//•]‰¿ŠÖ”—p‚Ì’è”
-		int var_num;//•Ï”‚Ì”
+		int var_num;//å¤‰æ•°ã®æ•°
 	public:
-		std::vector<double> x;//•i•¨‚ğ“ü‚ê‚é‚©‚Ç‚¤‚©‚Ì”z—ñ
-		double functionValue;//•]‰¿ŠÖ”‚Ì’l
+		std::vector<double> x;//å“ç‰©ã‚’å…¥ã‚Œã‚‹ã‹ã©ã†ã‹ã®é…åˆ—
+		double functionValue;//ä¸ãˆã‚‰ã‚ŒãŸé–¢æ•°ã®å€¤
 		double result;
 
-		Data(int _var_num)//ƒRƒ“ƒXƒgƒ‰ƒNƒ^
+		Data(int _var_num)//ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
 		{
 			var_num = _var_num;
 
-			x.resize(var_num);//isIncluded‚Ì”z—ñ‚Ì’·‚³‚Ìİ’è
+			x.resize(var_num);//isIncludedã®é…åˆ—ã®é•·ã•ã®è¨­å®š
 		}
-
-		/*double calcResult(std::vector<double> _varMax, std::vector<double> _varMin)//•]‰¿ŠÖ”
-		{
-			bool flag = true;
-			for (int i = 0; i < var_num; i++)
-			{
-				if (x[i] > _varMax[i] || x[i] < _varMin[i])
-					flag = false;
-			}
-
-			functionValue = std::sin(x[0] + x[1]) + std::pow((x[0] - x[1]), 2.0) - 1.5*x[0] + 2.5*x[1] + 1;
-			if (!flag)//Å‘åd—Ê‚ğ’´‚¦‚È‚¯‚ê‚Î‚»‚Ì‚Ü‚Ü
-			{
-				functionValue = coefficient * functionValue;
-			}
-			return functionValue;
-		}*/
 	};
 
-	std::vector<Data> data, prev_data;//‘€ì‘OŒã‚Å’l‚ğ•Û‚·‚é‚½‚ß‚É2ŒÂ
+	std::vector<Data> data, prev_data;//æ“ä½œå‰å¾Œã§å€¤ã‚’ä¿æŒã™ã‚‹ãŸã‚ã«2å€‹
 	Data eliteData;
-	GA(int _max_genom_list, int _var_num, std::vector<double> _varMax, std::vector<double> _varMin);	//ƒRƒ“ƒXƒgƒ‰ƒNƒ^
-	bool init();//‰Šú‰»
-	bool selection();//‘I‘ğ
+	GA(int _max_genom_list, int _var_num, std::vector<double> _varMax, std::vector<double> _varMin);	//ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
+	bool init();//åˆæœŸåŒ–
+	bool selection();//é¸æŠ
 
-	/*bool uniformityCrossover();//Œğ³
-	bool onePointCrossover();
-	bool twoPointCrossover();
-	bool tsunoPointCrossover();*/
 	bool blxAlphaCrossover();
-	bool mutation();//“Ë‘R•ÏˆÙ
-	bool calc(bool enableDisplay);//•]‰¿ŠÖ”‚ÌŒvZ
+	bool mutation();//çªç„¶å¤‰ç•°
+	bool calc(bool enableDisplay);//è©•ä¾¡é–¢æ•°ã®è¨ˆç®—
 	bool calcResult();
 	int random(int min, int max);
 	double random(int min, double max);
 	double random(double min, int max);
 	double random(double min, double max);
 
-	~GA();//ƒfƒRƒ“ƒXƒgƒ‰ƒNƒ^
+	~GA();//ãƒ‡ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
 };
 
 
