@@ -2,10 +2,10 @@
 #include "GA.h"
 
 GA::GA(int _max_genom_list, int _var_num, std::vector<double> _varMax, std::vector<double> _varMin) :
-	data(std::vector<Data>(_max_genom_list, _var_num)),//data‚Ì‰Šú‰»
+	data(std::vector<Data>(_max_genom_list, _var_num)),//dataã®åˆæœŸåŒ–
 	eliteData(_var_num)
 {
-	//‚à‚ç‚Á‚½•Ï”‚ğƒNƒ‰ƒX“à•Ï”‚ÉŠi”[
+	//ã‚‚ã‚‰ã£ãŸå¤‰æ•°ã‚’ã‚¯ãƒ©ã‚¹å†…å¤‰æ•°ã«æ ¼ç´
 	max_genom_list = _max_genom_list;
 	var_num = _var_num;
 	varMax = _varMax;
@@ -18,11 +18,9 @@ bool GA::init()
 	{
 		for (int j = 0; j < var_num; j++)
 		{
-			data[i].x[j] = random(varMin[j], varMax[j]);//ˆâ“`q‚Ì‰Šúİ’è
+			data[i].x[j] = random(varMin[j], varMax[j]);//éºä¼å­ã®åˆæœŸè¨­å®š
 			printf_s("%lf", data[i].x[j]);
 		}
-		//data[i].calcResult(varMax, varMin);//•]‰¿ŠÖ”
-		//resultSumValue += data[i].result;//•]‰¿ŠÖ”‚Ì‡Œv‚ğŒvZ
 		printf_s(" \t f(x,y)=%7.4lf\t Result=%9.5lf\n", data[i].functionValue, data[i].result);
 	}
 	prev_data = data;
@@ -32,34 +30,30 @@ bool GA::init()
 
 bool GA::selection()
 {
-	int max_num = 0;//Å‚à•]‰¿‚Ì—Ç‚¢ŒÂ‘Ì‚Ì”Ô†
+	int max_num = 0;//æœ€ã‚‚è©•ä¾¡ã®è‰¯ã„å€‹ä½“ã®ç•ªå·
 	bool ret = false;
 
 	calc(false);
-
-	//resultSumValue = 0;
-	//calcResult();
+	
 	for (int i = 0; i < max_genom_list; i++)
-		//ƒ‹[ƒŒƒbƒg‘I‘ğ—p‚É•]‰¿ŠÖ”‚Ì‡Œv‚Æˆê”Ô•]‰¿‚Ì—Ç‚¢”Ô†‚ğæ“¾
+		//ãƒ«ãƒ¼ãƒ¬ãƒƒãƒˆé¸æŠç”¨ã«è©•ä¾¡é–¢æ•°ã®åˆè¨ˆã¨ä¸€ç•ªè©•ä¾¡ã®è‰¯ã„ç•ªå·ã‚’å–å¾—
 	{
-		//resultSumValue += prev_data[i].result;
 		if (data[i].result > data[max_num].result)
 			max_num = i;
 	}
 
-	eliteData = data[max_num];//ƒf[ƒ^‚Ìæ“ª‚ÍÅ‚à•]‰¿‚Ì—Ç‚¢ŒÂ‘Ì
-								   //	eliteData = prev_data[minNum];
-	if (-eliteData.functionValue + prev_data[max_num].functionValue != 0)//Å‚à•]‰¿‚Ì—Ç‚¢ŒÂ‘Ì‚Ì•Ï‰»‚ÌŠÄ‹(ƒfƒoƒbƒO—p)
+	eliteData = data[max_num];//æœ€ã‚‚è©•ä¾¡ã®è‰¯ã„å€‹ä½“ã‚’ä¿æŒ
+	if (-eliteData.functionValue + prev_data[max_num].functionValue != 0)//æœ€ã‚‚è©•ä¾¡ã®è‰¯ã„å€‹ä½“ã®å¤‰åŒ–ã®ç›£è¦–(ãƒ‡ãƒãƒƒã‚°ç”¨)
 		ret = true;
 	prev_data = data;
 	for (int i = 0; i < max_genom_list; i++)
 	{
-		double selector = random(0.0, 1.0);//—”‚ğ¶¬
-		double needle = 0;//ƒ‹[ƒŒƒbƒg‚Ìj‚ğ¶¬
+		double selector = random(0.0, 1.0);//ä¹±æ•°ã‚’ç”Ÿæˆ
+		double needle = 0;//ãƒ«ãƒ¼ãƒ¬ãƒƒãƒˆã®é‡ã‚’ç”Ÿæˆ
 		int j = 0;
 		for (;; j++)
 		{
-			needle += (prev_data[j].result / resultSumValue);//ƒ‹[ƒŒƒbƒg‚Ìj‚ğ—”‚Ì’l‚Ü‚Åi‚ß‚é
+			needle += (prev_data[j].result / resultSumValue);//ãƒ«ãƒ¼ãƒ¬ãƒƒãƒˆã®é‡ã‚’ä¹±æ•°ã®å€¤ã¾ã§é€²ã‚ã‚‹
 			if (needle > selector)
 				break;
 			if (j == (max_genom_list - 1))
@@ -70,143 +64,21 @@ bool GA::selection()
 	return ret;
 }
 
-/*bool GA::uniformityCrossover()
-{
-	prev_data = data;
-
-	for (int i = 0; i < max_genom_list; i += 2)//2ŒÂ‚¸‚ÂŒğ³
-	{
-		for (int j = 0; j < var_num; j++)
-		{
-			bool isCrossover = (random(0.0, 1.0) >= crossoverRate ? true : false);//true‚ÅŒğ³‚È‚µ
-			data[i + 1].x[j] = isCrossover ? prev_data[i + 1].x[j] : prev_data[i].x[j];
-			//if (i != 0)//æ“ª‚Ìƒf[ƒ^‚Í•ÛŒì
-			data[i].x[j] = isCrossover ? prev_data[i].x[j] : prev_data[i + 1].x[j];
-		}
-	}
-	return true;
-}
-
-bool GA::onePointCrossover()
-{
-	prev_data = data;
-
-	for (int i = 0; i < max_genom_list; i += 2)//2ŒÂ‚¸‚ÂŒğ³
-	{
-		int del1 = random(0, var_num - 1);
-		if (random(0.0, 1.0) <= crossoverRate)
-		{
-			for (int j = 0; j < del1; j++)
-			{
-				data[i + 1].x[j] = prev_data[i].x[j];
-				data[i].x[j] = prev_data[i + 1].x[j];
-			}
-		}
-		if (random(0.0, 1.0) <= crossoverRate)
-		{
-			for (int j = del1; j < var_num; j++)
-			{
-				data[i + 1].x[j] = prev_data[i].x[j];
-				data[i].x[j] = prev_data[i + 1].x[j];
-			}
-		}
-	}
-	return true;
-}
-
-bool GA::twoPointCrossover()
-{
-	prev_data = data;
-
-	for (int i = 0; i < max_genom_list; i += 2)//2ŒÂ‚¸‚ÂŒğ³
-	{
-		int del1 = random(0, var_num / 2);
-		int del2 = random(del1, var_num - 1);
-		if (random(0.0, 1.0) <= crossoverRate)
-		{
-			for (int j = 0; j < del1; j++)
-			{
-				data[i + 1].x[j] = prev_data[i].x[j];
-				data[i].x[j] = prev_data[i + 1].x[j];
-			}
-		}
-		if (random(0.0, 1.0) <= crossoverRate)
-		{
-			for (int j = del1; j < del2; j++)
-			{
-				data[i + 1].x[j] = prev_data[i].x[j];
-				data[i].x[j] = prev_data[i + 1].x[j];
-			}
-		}
-
-		if (random(0.0, 1.0) <= crossoverRate)
-		{
-			for (int j = del2; j < var_num; j++)
-			{
-				data[i + 1].x[j] = prev_data[i].x[j];
-				data[i].x[j] = prev_data[i + 1].x[j];
-			}
-		}
-	}
-	return true;
-}
-
-bool GA::tsunoPointCrossover()
-{
-	prev_data = data;
-
-	for (int i = 0; i < max_genom_list; i += 2)//2ŒÂ‚¸‚ÂŒğ³
-	{
-		int del1 = random(0, var_num - 1);
-		int del2 = random(del1, var_num);
-		if (random(0.0, 1.0) <= crossoverRate)
-		{
-			for (int j = del1; j < del2; j++)
-			{
-				data[i + 1].x[j] = prev_data[i].x[j];
-				data[i].x[j] = prev_data[i + 1].x[j];
-			}
-		}
-	}
-
-	return true;
-}*/
-
 bool GA::blxAlphaCrossover()
 {
 	prev_data = data;
 
-	for (int i = 0; i < max_genom_list; i += 2)//2ŒÂ‚¸‚ÂŒğ³
+	for (int i = 0; i < max_genom_list; i += 2)//2å€‹ãšã¤äº¤å‰
 	{
 		for (int j = 0; j < var_num; j++)
 		{
-			double ave, length;//varL, varH, 
+			double ave, length;
 
-			/*if (data[i].x[j] > data[i + 1].x[j])
-			{
-				varH = data[i].x[j];
-				varL = data[i + 1].x[j];
-			}
-			else
-			{
-				varH = data[i + 1].x[j];
-				varL = data[i].x[j];
-			}*/
 			ave = (data[i].x[j] + data[i + 1].x[j]) / 2;
-			//length = varH - varL;
 			length = std::abs((data[i].x[j] - data[i + 1].x[j]));
 
 			data[i].x[j] = random(ave - length * (1 + alpha*2) / 2, ave + length * (1 + alpha) / 2);
 			data[i + 1].x[j] = random(ave - length * (1 + alpha) / 2, ave + length * (1 + alpha) / 2);
-
-			/*bool isCrossover = (random(0.0, 1.0) >= crossoverRate ? true : false);//true‚ÅŒğ³‚È‚µ
-			std::vector<double> range(var_num);
-			for (int k = 0; k < var_num; k++)
-			{
-				range[k] = std::abs(data[i].x[k] - data[i + 1].x[k]);
-			}
-			data[i + 1].x[j] = data[i];
-			data[i].x[j] = ;*/
 		}
 	}
 	return true;
@@ -216,7 +88,7 @@ bool GA::mutation()
 {
 	for (int i = 0; i < max_genom_list; i++)
 	{
-		if (random(0.0, 1.0) <= individualMutationRate)//ŒÂ‘Ì“Ë‘R•ÏˆÙ—¦‚ÌŒvZ
+		if (random(0.0, 1.0) <= individualMutationRate)//å€‹ä½“çªç„¶å¤‰ç•°ç‡ã®è¨ˆç®—
 		{
 			for (int j = 0; j < var_num; j++)
 			{
@@ -232,7 +104,6 @@ bool GA::calc(bool enableDisplay)
 	calcResult();
 	for (int i = 0; i < max_genom_list; i++)
 	{
-		//data[i].calcResult(varMax, varMin);//•]‰¿ŠÖ”‚ÌŒvZ
 		if (data[i].result < data[minNum].result)
 		{
 			minNum = i;
@@ -251,7 +122,7 @@ bool GA::calc(bool enableDisplay)
 		{
 			for (int j = 0; j < var_num; j++)
 			{
-				printf_s("%lf,", data[i].x[j]);//ƒfƒoƒbƒO—p
+				printf_s("%lf,", data[i].x[j]);//ãƒ‡ãƒãƒƒã‚°ç”¨
 			}
 			printf_s(" \t f(x,y)=%7.4lf\t Result=%7.4lf\n", data[i].functionValue, data[i].result);
 		}
@@ -277,7 +148,7 @@ bool GA::calcResult()
 	for (int i = 0; i < max_genom_list; i++)
 	{
 		bool flag = true;
-		double coefficient = 0.0001;//•]‰¿ŠÖ”—p‚Ì’è”
+		double coefficient = 0.0001;//è©•ä¾¡é–¢æ•°ç”¨ã®å®šæ•°
 		for (int j = 0; j < var_num; j++)
 		{
 			if (data[i].x[j] > varMax[j] || data[i].x[j] < varMin[j])
@@ -285,7 +156,7 @@ bool GA::calcResult()
 		}
 		data[i].result = std::pow((data[i].functionValue - seg), 2.0);
 
-		if (!flag)//Å‘åd—Ê‚ğ’´‚¦‚È‚¯‚ê‚Î‚»‚Ì‚Ü‚Ü
+		if (!flag)//æœ€å¤§é‡é‡ã‚’è¶…ãˆãªã‘ã‚Œã°ãã®ã¾ã¾
 		{
 			data[i].result *= coefficient;
 		}
@@ -296,7 +167,7 @@ bool GA::calcResult()
 
 int GA::random(int min, int max)
 {
-	//—”‚Ìİ’è
+	//ä¹±æ•°ã®è¨­å®š
 	std::random_device rnd;
 	std::mt19937 engine(rnd());
 	std::uniform_int_distribution<int> distribution(min, max);
