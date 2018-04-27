@@ -1,0 +1,5 @@
+﻿  stdafx.cpp
+  GA.cpp
+  report2_git.cpp
+c:\users\student\documents\report2_git\report2_git\report2_git\report2_git.cpp(27): error C2039: 'uniformityCrossover': 'GA' のメンバーではありません。
+  c:\users\student\documents\report2_git\report2_git\report2_git\ga.h(11): note: 'GA' の宣言を確認してください
