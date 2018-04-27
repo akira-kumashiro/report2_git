@@ -179,6 +179,19 @@ bool GA::blxAlphaCrossover()
 	{
 		for (int j = 0; j < var_num; j++)
 		{
+			double varL, varH;
+
+			if (data[i].x[j] > data[i + 1].x[j])
+			{
+				varH = data[i].x[j];
+				varL = data[i+1].x[j];
+			}
+			else
+			{
+				varH = data[i + 1].x[j];
+				varL = data[i].x[j];
+			}
+
 			bool isCrossover = (random(0.0, 1.0) >= crossoverRate ? true : false);//true‚ÅŒğ³‚È‚µ
 			std::vector<double> range(var_num);
 			for (int k = 0; k < var_num; k++)
